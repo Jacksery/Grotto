@@ -56,7 +56,7 @@ int main(int, char **) {
   glfwSetKeyCallback(window, key_callback);
 
   // Set up the viewport
-  int width{640}, height{480};
+  int width, height;
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
