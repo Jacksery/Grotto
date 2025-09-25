@@ -1,8 +1,11 @@
+#include "triangle_mesh.h"
+
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
 #include <sstream>
+#include <vector>
 
 void error_callback(int error, const char *description) {
   std::cerr << "\033[31m[ERROR::GLFW]\033[0m " << description << std::endl;
@@ -14,24 +17,12 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
     glfwSetWindowShouldClose(window, GLFW_TRUE);
 }
 
+unsigned int makeShaderModule(const std::string &filepath,
+                              unsigned int moduleType);
+unsigned int makeShader(const std::string &vertexFilePath,
+                        const std::string &fragmentFilePath);
+
 int main(int, char **) {
-  // Load in shaders
-  std::ifstream file;
-  std::stringstream bufferedLines;
-  std::string line;
-
-  file.open("../../../src/shaders/vertex.txt");
-  if (file.is_open()) {
-    while (std::getline(file, line)) {
-      std::cout << line << "\n";
-    }
-    file.close();
-  } else {
-    std::cerr
-        << "\033[31m[ERROR::FILE::SHADER]\033[0m Could not open vertex shader"
-        << std::endl;
-  }
-
   glfwSetErrorCallback(error_callback);
 
   // Initalise GLFW
@@ -70,18 +61,67 @@ int main(int, char **) {
   glViewport(0, 0, width, height);
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+  // Create a triangle mesh
+  TriangleMesh *triangleMesh = new TriangleMesh();
+
+  // Create and compile shaders
+  // Currently based on executing from `./out/build/clang-21/`
+  unsigned int shaderProgram = makeShader("../../../src/shaders/vertex.txt",
+                                          "../../../src/shaders/fragment.txt");
+  if (shaderProgram == 0) {
+    std::cerr
+        << "\033[31m[ERROR::SHADER]\033[0m Failed to create shader program"
+        << std::endl;
+    return -1;
+  }
+
+  // Main loop
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
+    glUseProgram(shaderProgram);
+    triangleMesh->draw();
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
 
+  glDeleteProgram(shaderProgram);
   glfwDestroyWindow(window);
   glfwTerminate();
   return 0;
 }
 
-unsigned int make_module(const std::string &filepath, unsigned int moduleType) {
+unsigned int makeShader(const std::string &vertexFilePath,
+                        const std::string &fragmentFilePath) {
+  std::vector<unsigned int> shaderModules;
+  shaderModules.push_back(makeShaderModule(vertexFilePath, GL_VERTEX_SHADER));
+  shaderModules.push_back(
+      makeShaderModule(fragmentFilePath, GL_FRAGMENT_SHADER));
+
+  unsigned int program = glCreateProgram();
+  for (unsigned int shaderModule : shaderModules) {
+    glAttachShader(program, shaderModule);
+  }
+  glLinkProgram(program);
+
+  int success;
+  glGetProgramiv(program, GL_LINK_STATUS, &success);
+  if (!success) {
+    char infoLog[1024];
+    glGetProgramInfoLog(program, 1024, NULL, infoLog);
+    std::cerr << "\033[31m[ERROR::SHADER::LINKING_FAILED]\033[0m " << infoLog
+              << std::endl;
+    return 0;
+  }
+
+  for (unsigned int shaderModule : shaderModules) {
+    glDeleteShader(shaderModule);
+  }
+
+  return program;
+}
+
+unsigned int makeShaderModule(const std::string &filepath,
+                              unsigned int moduleType) {
   std::ifstream file;
   std::stringstream bufferedLines;
   std::string line;

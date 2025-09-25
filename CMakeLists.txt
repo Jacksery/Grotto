@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)
 
-add_executable(Grotto src/main.cpp src/glad.c)
+add_executable(Grotto src/main.cpp src/glad.c src/triangle_mesh.cpp)
 
 target_include_directories(Grotto PRIVATE include)
 target_link_libraries(Grotto glfw OpenGL::GL)
