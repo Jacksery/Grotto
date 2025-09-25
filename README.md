@@ -1,53 +1,32 @@
 # OpenGL 3d Engine
-## Example Project Layout
-Here is an example project layout to help structure the project:
-```
-project-root/
-├── CMakeLists.txt
-├── CMakePresets.json
-├── src/
-│   ├── main.cpp
-│   ├── engine/
-│   │   ├── core/
-│   │   │   ├── Application.h
-│   │   │   ├── Application.cpp
-│   │   │   ├── Window.h
-│   │   │   ├── Window.cpp
-│   │   │   ├── Input.h
-│   │   │   └── Input.cpp
-│   │   ├── renderer/
-│   │   │   ├── Renderer.h
-│   │   │   ├── Renderer.cpp
-│   │   │   ├── Shader.h
-│   │   │   ├── Shader.cpp
-│   │   │   ├── Buffer.h
-│   │   │   ├── Buffer.cpp
-│   │   │   ├── VertexArray.h
-│   │   │   └── VertexArray.cpp
-│   │   ├── scene/
-│   │   │   ├── Scene.h
-│   │   │   ├── Scene.cpp
-│   │   │   ├── Entity.h
-│   │   │   ├── Entity.cpp
-│   │   │   ├── Camera.h
-│   │   │   └── Camera.cpp
-│   │   └── math/
-│   │       ├── Vector3.h
-│   │       ├── Matrix4.h
-│   │       └── Transform.h
-│   └── game/
-│       ├── Game.h
-│       └── Game.cpp
-├── assets/
-│   ├── shaders/
-│   │   ├── basic.vert
-│   │   └── basic.frag
-│   ├── textures/
-│   └── models/
-├── third-party/
-│   ├── glad/
-│   ├── glfw/
-│   └── glm/
-├── include/
-└── lib/
-```
+A simple OpenGL 3D engine built with C++ and GLFW.
+## Prerequisites
+- CMake ≥ 3.10
+- A C++ compiler (tested with G++ 15 and Clang++ 21)
+- GLFW library (3.4 tested)
+- OpenGL ≥ 3.3
+## Building the Project
+1. Clone the repository:
+    ```bash
+    git clone https://github.com/Jacksery/Grotto
+    cd Grotto
+    ```
+2. Create a build directory and navigate into it:
+    ```bash
+    mkdir build
+    cd build
+    ```
+3. Run CMake to configure the project:
+    ```bash
+    cmake ..
+    ```
+4. Build the project:
+    ```bash
+    cmake --build .
+    ```
+5. Run the executable:
+    ```bash
+    ./OpenGL
+    ```
+## License
+This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
