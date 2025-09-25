@@ -25,7 +25,7 @@ int main(int, char **) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-  GLFWwindow *window = glfwCreateWindow(640, 480, "My Title", NULL, NULL);
+  GLFWwindow *window = glfwCreateWindow(640, 480, "Grotto", NULL, NULL);
   if (!window) {
     // Window or OpenGL context creation failed
     std::cerr << "\033[31m[ERROR::GLFW]\033[0m Failed to create window"
