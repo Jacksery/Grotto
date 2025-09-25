@@ -1,6 +1,8 @@
 #include "triangle_mesh.h"
 
 #include "glad/glad.h"
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb/stb_image.h"
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
