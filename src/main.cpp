@@ -1,8 +1,6 @@
-#include "triangle_mesh.h"
-
 #include "glad/glad.h"
-#define STB_IMAGE_IMPLEMENTATION
-#include "stb/stb_image.h"
+#include "material.h"
+#include "triangle_mesh.h"
 #include <GLFW/glfw3.h>
 #include <fstream>
 #include <iostream>
@@ -65,6 +63,8 @@ int main(int, char **) {
 
   // Create a triangle mesh
   TriangleMesh *triangleMesh = new TriangleMesh();
+
+  Material *material = new Material("../../../res/textures/brick.jpg");
 
   // Create and compile shaders
   // Currently based on executing from `./out/build/clang-21/`
