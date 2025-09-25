@@ -2,12 +2,12 @@ cmake_minimum_required(VERSION 3.10.0)
 project(Grotto VERSION 0.1.0 LANGUAGES C CXX)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
+find_package(glfw3 3.4 REQUIRED)
+find_package(OpenGL REQUIRED)
+
 add_executable(Grotto src/main.cpp src/glad.c)
 
 target_include_directories(Grotto PRIVATE include)
-
-find_package(glfw3 3.4 REQUIRED)
-find_package(OpenGL REQUIRED)
 target_link_libraries(Grotto glfw OpenGL::GL)
 
 # Copy compile_commands.json to the source directory after build
