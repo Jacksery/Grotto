@@ -1,4 +1,4 @@
-# OpenGL 3d Engine
+# Grotto 3D Engine
 A simple OpenGL 3D engine built with C++ and GLFW.
 ## Prerequisites
 - CMake ≥ 3.10
