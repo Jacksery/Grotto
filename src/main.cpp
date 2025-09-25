@@ -1,6 +1,8 @@
 #include "glad/glad.h"
 #include <GLFW/glfw3.h>
+#include <fstream>
 #include <iostream>
+#include <sstream>
 
 void error_callback(int error, const char *description) {
   std::cerr << "\033[31m[ERROR::GLFW]\033[0m " << description << std::endl;
@@ -13,6 +15,23 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 }
 
 int main(int, char **) {
+  // Load in shaders
+  std::ifstream file;
+  std::stringstream bufferedLines;
+  std::string line;
+
+  file.open("../../../src/shaders/vertex.txt");
+  if (file.is_open()) {
+    while (std::getline(file, line)) {
+      std::cout << line << "\n";
+    }
+    file.close();
+  } else {
+    std::cerr
+        << "\033[31m[ERROR::FILE::SHADER]\033[0m Could not open vertex shader"
+        << std::endl;
+  }
+
   glfwSetErrorCallback(error_callback);
 
   // Initalise GLFW
@@ -60,4 +79,44 @@ int main(int, char **) {
   glfwDestroyWindow(window);
   glfwTerminate();
   return 0;
+}
+
+unsigned int make_module(const std::string &filepath, unsigned int moduleType) {
+  std::ifstream file;
+  std::stringstream bufferedLines;
+  std::string line;
+
+  file.open(filepath);
+  if (file.is_open()) {
+    while (std::getline(file, line)) {
+      bufferedLines << line << "\n";
+    }
+    file.close();
+  } else {
+    std::cerr
+        << "\033[31m[ERROR::SHADER::FILE]\033[0m Could not open shader file: "
+        << filepath << std::endl;
+    return 0;
+  }
+
+  std::string shaderSource = bufferedLines.str();
+  const char *shaderSourceCStr = shaderSource.c_str();
+  bufferedLines.str("");
+  file.close();
+
+  unsigned int shaderModule = glCreateShader(moduleType);
+  glShaderSource(shaderModule, 1, &shaderSourceCStr, NULL);
+  glCompileShader(shaderModule);
+
+  int success;
+  glGetShaderiv(shaderModule, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    char infoLog[1024];
+    glGetShaderInfoLog(shaderModule, 1024, NULL, infoLog);
+    std::cerr << "\033[31m[ERROR::SHADER::COMPILATION_FAILED]\033[0m "
+              << infoLog << std::endl;
+    return 0;
+  }
+
+  return shaderModule;
 }
