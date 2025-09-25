@@ -14,8 +14,9 @@ static void key_callback(GLFWwindow *window, int key, int scancode, int action,
 
 int main(int, char **) {
   glfwSetErrorCallback(error_callback);
+
+  // Initalise GLFW
   if (!glfwInit()) {
-    // Initialization failed
     std::cerr << "\033[31m[ERROR::GLFW]\033[0m Failed to initialize GLFW"
               << std::endl;
     return -1;
@@ -25,15 +26,17 @@ int main(int, char **) {
   glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
   glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
+  // Create a windowed mode window and its OpenGL context
   GLFWwindow *window = glfwCreateWindow(640, 480, "Grotto", NULL, NULL);
   if (!window) {
-    // Window or OpenGL context creation failed
     std::cerr << "\033[31m[ERROR::GLFW]\033[0m Failed to create window"
               << std::endl;
     glfwTerminate();
     return -1;
   }
-  glfwMakeContextCurrent(window);
+  glfwMakeContextCurrent(window); // Bind the OpenGL context to the window
+
+  // Load OpenGL functions using GLAD
   if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
     std::cerr << "\033[31m[ERROR::GLAD]\033[0m Failed to initialize GLAD"
               << std::endl;
@@ -42,6 +45,7 @@ int main(int, char **) {
 
   glfwSetKeyCallback(window, key_callback);
 
+  // Set up the viewport
   int width{640}, height{480};
   glfwGetFramebufferSize(window, &width, &height);
   glViewport(0, 0, width, height);
