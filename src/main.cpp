@@ -65,6 +65,7 @@ int main(int, char **) {
   TriangleMesh *triangleMesh = new TriangleMesh();
 
   Material *material = new Material("../../../res/textures/brick.jpg");
+  Material *mask = new Material("../../../res/textures/mask.jpg");
 
   // Create and compile shaders
   // Currently based on executing from `./out/build/clang-21/`
@@ -77,16 +78,31 @@ int main(int, char **) {
     return -1;
   }
 
+  // Set texture units
+  glUseProgram(shaderProgram);
+  glUniform1i(glGetUniformLocation(shaderProgram, "material"), 0);
+  glUniform1i(glGetUniformLocation(shaderProgram, "mask"), 1);
+
+  // Enable alpha blending
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
   // Main loop
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
+    material->use(0);
+    mask->use(1);
+
     triangleMesh->draw();
     glfwSwapBuffers(window);
     glfwPollEvents();
   }
 
   glDeleteProgram(shaderProgram);
+  delete triangleMesh;
+  delete material;
+  delete mask;
   glfwDestroyWindow(window);
   glfwTerminate();
   return 0;

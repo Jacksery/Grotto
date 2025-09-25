@@ -37,7 +37,7 @@ Material::Material(const char *texturePath) {
 
 Material::~Material() { glDeleteTextures(1, &textureID); }
 
-void Material::use() {
-  //   glActiveTexture(GL_TEXTURE0);
+void Material::use(int unit) {
+  glActiveTexture(GL_TEXTURE0 + unit);
   glBindTexture(GL_TEXTURE_2D, textureID);
 }
