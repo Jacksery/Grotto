@@ -1,9 +1,12 @@
 #include "glad/glad.h"
-#include "linear_algebra.h"
+#include "glm/fwd.hpp"
 #include "material.h"
 #include "triangle_mesh.h"
 #include <GLFW/glfw3.h>
 #include <fstream>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <iostream>
 #include <sstream>
 #include <vector>
@@ -85,27 +88,23 @@ int main(int, char **) {
   glUniform1i(glGetUniformLocation(shaderProgram, "mask"), 1);
 
   // Transforms
-
-  // Model transform
-  vec3 translation = {.elements = {-0.2f, 0.4f, 0.0f}};
+  glm::vec3 translation = {-0.2f, 0.4f, 0.0f};
+  glm::vec3 cameraPos = {-5.0f, 0.0f, 3.0f};
+  glm::vec3 targetPos = {0.0f, 0.0f, 0.0f};
+  glm::vec3 upDir = {0.0f, 0.0f, 1.0f};
   unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-
-  // View transform
-  vec3 cameraPos = {.elements = {-5.0f, 0.0f, 3.0f}};
-  vec3 targetPos = {.elements = {0.0f, 0.0f, 0.0f}};
-  mat4 view = create_lookat_matrix(cameraPos, targetPos);
   unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
-  glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view.elements);
-
-  // Projection transform
-  float fov = 45.0f;
-  float aspect = static_cast<float>(width) / static_cast<float>(height);
-  float near = 0.1f;
-  float far = 10.0f;
-  mat4 projection = create_perspective_matrix(fov, aspect, near, far);
   unsigned int projectionLoc =
       glGetUniformLocation(shaderProgram, "projection");
-  glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, projection.elements);
+
+  // Camera/View transformation
+  glm::mat4 view = glm::lookAt(cameraPos, targetPos, upDir);
+  glUniformMatrix4fv(viewLoc, 1, GL_FALSE, glm::value_ptr(view));
+
+  // Model transformation
+  glm::mat4 projection = glm::perspective(
+      glm::radians(45.0f), width / static_cast<float>(height), 0.1f, 10.0f);
+  glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, glm::value_ptr(projection));
 
   // Enable alpha blending
   glEnable(GL_BLEND);
@@ -116,8 +115,11 @@ int main(int, char **) {
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
 
-    mat4 model = create_model_transform(translation, 10 * glfwGetTime());
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.elements);
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, translation);
+    model = glm::rotate(model, (float)glfwGetTime(),
+                        glm::vec3(0.0f, 0.0f, 1.0f)); // Rotate over time
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
 
     material->use(0);
     mask->use(1);
