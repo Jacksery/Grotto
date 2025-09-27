@@ -1,4 +1,5 @@
 #include "glad/glad.h"
+#include "linear_algebra.h"
 #include "material.h"
 #include "triangle_mesh.h"
 #include <GLFW/glfw3.h>
@@ -83,6 +84,29 @@ int main(int, char **) {
   glUniform1i(glGetUniformLocation(shaderProgram, "material"), 0);
   glUniform1i(glGetUniformLocation(shaderProgram, "mask"), 1);
 
+  // Transforms
+
+  // Model transform
+  vec3 translation = {.elements = {-0.2f, 0.4f, 0.0f}};
+  unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
+
+  // View transform
+  vec3 cameraPos = {.elements = {-5.0f, 0.0f, 3.0f}};
+  vec3 targetPos = {.elements = {0.0f, 0.0f, 0.0f}};
+  mat4 view = create_lookat_matrix(cameraPos, targetPos);
+  unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
+  glUniformMatrix4fv(viewLoc, 1, GL_FALSE, view.elements);
+
+  // Projection transform
+  float fov = 45.0f;
+  float aspect = static_cast<float>(width) / static_cast<float>(height);
+  float near = 0.1f;
+  float far = 10.0f;
+  mat4 projection = create_perspective_matrix(fov, aspect, near, far);
+  unsigned int projectionLoc =
+      glGetUniformLocation(shaderProgram, "projection");
+  glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, projection.elements);
+
   // Enable alpha blending
   glEnable(GL_BLEND);
   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
@@ -91,6 +115,10 @@ int main(int, char **) {
   while (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT);
     glUseProgram(shaderProgram);
+
+    mat4 model = create_model_transform(translation, 10 * glfwGetTime());
+    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, model.elements);
+
     material->use(0);
     mask->use(1);
 
