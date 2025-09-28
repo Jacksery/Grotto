@@ -1,63 +1,59 @@
-#include "glad/glad.h"
-#include <GLFW/glfw3.h>
-#include <iostream>
+#include "config/config.h"
+#include "controller/app.h"
 
-void error_callback(int error, const char *description) {
-  std::cerr << "\033[31m[ERROR::GLFW]\033[0m " << description << std::endl;
-}
+#include "components/cameraComponent.h"
+#include "components/physicsComponent.h"
+#include "components/renderComponent.h"
+#include "components/transformComponent.h"
+#include "logging/logging.h"
 
-static void key_callback(GLFWwindow *window, int key, int scancode, int action,
-                         int mods) {
-  if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS)
-    glfwSetWindowShouldClose(window, GLFW_TRUE);
-}
+int main() {
 
-int main(int, char **) {
-  glfwSetErrorCallback(error_callback);
+  App *app = new App();
 
-  // Initalise GLFW
-  if (!glfwInit()) {
-    std::cerr << "\033[31m[ERROR::GLFW]\033[0m Failed to initialize GLFW"
-              << std::endl;
+  TransformComponent transform;
+  PhysicsComponent physics;
+  RenderComponent render;
+  CameraComponent *camera = new CameraComponent();
+
+  unsigned int cubeEntity = app->makeEntity(); // Returns id of new entity
+  Logging::Info("APP",
+                "Created cube entity with ID: " + std::to_string(cubeEntity));
+
+  transform.position = {3.0f, 0.0f, 0.25f};
+  transform.eulers = {0.0f, 0.0f, 0.0f};
+  physics.velocity = {0.0f, 0.0f, 0.0f};
+  physics.eulerVelocity = {0.0f, 0.0f, 10.0f};
+  render.mesh = app->makeCubeMesh({0.25f, 0.25f, 0.25f});
+  render.material = app->makeTexture("../../../res/textures/brick.jpg");
+  if (render.material == 0) {
+    Logging::Error("APP", "Failed to create texture, ensure the path is valid");
+    delete app;
     return -1;
   }
 
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-  glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-  glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+  app->transformComponents[cubeEntity] = transform;
+  app->physicsComponents[cubeEntity] = physics;
+  app->renderComponents[cubeEntity] = render;
 
-  // Create a windowed mode window and its OpenGL context
-  GLFWwindow *window = glfwCreateWindow(640, 480, "Grotto", NULL, NULL);
-  if (!window) {
-    std::cerr << "\033[31m[ERROR::GLFW]\033[0m Failed to create window"
-              << std::endl;
-    glfwTerminate();
-    return -1;
-  }
-  glfwMakeContextCurrent(window); // Bind the OpenGL context to the window
+  unsigned int cameraEntity = app->makeEntity();
+  Logging::Info("APP", "Created camera entity with ID: " +
+                           std::to_string(cameraEntity));
+  transform.position = {0.0f, 0.0f, 1.0f};
+  transform.eulers = {0.0f, 0.0f, 0.0f};
 
-  // Load OpenGL functions using GLAD
-  if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress)) {
-    std::cerr << "\033[31m[ERROR::GLAD]\033[0m Failed to initialize GLAD"
-              << std::endl;
-    return -1;
-  }
+  app->transformComponents[cameraEntity] = transform;
+  app->cameraComponent = camera;
+  app->cameraID = cameraEntity;
 
-  glfwSetKeyCallback(window, key_callback);
+  // Setup shaders and projection matrix
+  app->initOpenGL();
 
-  // Set up the viewport
-  int width{640}, height{480};
-  glfwGetFramebufferSize(window, &width, &height);
-  glViewport(0, 0, width, height);
-  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+  // Instantiate systems for managing game state
+  app->initSystems();
 
-  while (!glfwWindowShouldClose(window)) {
-    glClear(GL_COLOR_BUFFER_BIT);
-    glfwSwapBuffers(window);
-    glfwPollEvents();
-  }
+  app->run();
 
-  glfwDestroyWindow(window);
-  glfwTerminate();
+  delete app;
   return 0;
 }
