@@ -147,8 +147,7 @@ void App::initOpenGL() {
   glEnable(GL_CULL_FACE);
   glCullFace(GL_BACK);
 
-  shader = makeShader("../../../src/shaders/vertex.txt",
-                      "../../../src/shaders/fragment.txt");
+  shader = makeShader("shaders/vertex.txt", "shaders/fragment.txt");
   if (shader == 0) {
     Logging::Error("APP", "Failed to create shader, exiting");
     glfwTerminate();

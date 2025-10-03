@@ -1,5 +1,6 @@
 #include "config/config.h"
 #include "controller/app.h"
+#include "resources/resourceManager.h"
 
 #include "components/cameraComponent.h"
 #include "components/physicsComponent.h"
@@ -7,7 +8,17 @@
 #include "components/transformComponent.h"
 #include "logging/logging.h"
 
-int main() {
+int main(int argc, char *argv[]) {
+
+  // Initialise resource manager with path to executable
+  // This allows us to find assets relative to the executable
+  if (argc > 0) {
+    auto &resourceMgr = ResourceManager::getInstance();
+    resourceMgr.initialise(std::filesystem::absolute(argv[0]));
+  } else {
+    std::cerr << "Error: Could not determine executable path.\n";
+    return 1;
+  }
 
   App *app = new App();
 
@@ -25,7 +36,11 @@ int main() {
   physics.velocity = {0.0f, 0.0f, 0.0f};
   physics.eulerVelocity = {0.0f, 0.0f, 10.0f};
   render.mesh = app->makeCubeMesh({0.25f, 0.25f, 0.25f});
-  render.material = app->makeTexture("../../../res/textures/brick.jpg");
+
+  auto &resourceMgr = ResourceManager::getInstance();
+  render.material =
+      app->makeTexture(resourceMgr.getAssetPath("textures/brick.jpg").c_str());
+
   if (render.material == 0) {
     Logging::Error("APP", "Failed to create texture, ensure the path is valid");
     delete app;

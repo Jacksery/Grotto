@@ -1,4 +1,6 @@
 #include "view/shader.h"
+#include "config/config.h"
+#include "resources/resourceManager.h"
 
 unsigned int makeShader(const std::string &vertex_filepath,
                         const std::string &fragment_filepath) {
@@ -6,11 +8,15 @@ unsigned int makeShader(const std::string &vertex_filepath,
   // To store all the shader modules
   std::vector<unsigned int> modules;
 
+  auto &resourceMgr = ResourceManager::getInstance();
+
   // Add a vertex shader module
-  modules.push_back(makeShaderModule(vertex_filepath, GL_VERTEX_SHADER));
+  modules.push_back(makeShaderModule(resourceMgr.getAssetPath(vertex_filepath),
+                                     GL_VERTEX_SHADER));
 
   // Add a fragment shader module
-  modules.push_back(makeShaderModule(fragment_filepath, GL_FRAGMENT_SHADER));
+  modules.push_back(makeShaderModule(
+      resourceMgr.getAssetPath(fragment_filepath), GL_FRAGMENT_SHADER));
 
   // Attach all the modules then link the program
   unsigned int shader = glCreateProgram();
