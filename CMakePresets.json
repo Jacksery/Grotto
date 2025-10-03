@@ -5,9 +5,9 @@
             "name": "gcc-15",
             "displayName": "Debug GCC 15.2.0 aarch64-apple-darwin25",
             "description": "Using compilers: C = /opt/homebrew/bin/aarch64-apple-darwin25-gcc-15, CXX = /opt/homebrew/bin/aarch64-apple-darwin25-g++-15",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/out/debug/gcc-15",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/debug/gcc-15",
                 "CMAKE_C_COMPILER": "/opt/homebrew/bin/aarch64-apple-darwin25-gcc-15",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/bin/aarch64-apple-darwin25-g++-15",
                 "CMAKE_BUILD_TYPE": "Debug"
@@ -17,9 +17,9 @@
             "name": "Clang 21.1.2 arm64-apple-darwin25.1.0",
             "displayName": "Debug Clang 21.1.2 arm64-apple-darwin25.1.0",
             "description": "Using compilers: C = /opt/homebrew/Cellar/llvm/21.1.2/bin/clang, CXX = /opt/homebrew/Cellar/llvm/21.1.2/bin/clang++",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/out/debug/clang-21",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/debug/clang-21",
                 "CMAKE_C_COMPILER": "/opt/homebrew/Cellar/llvm/21.1.2/bin/clang",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/Cellar/llvm/21.1.2/bin/clang++",
                 "CMAKE_BUILD_TYPE": "Debug"
@@ -29,9 +29,9 @@
             "name": "rl gcc-15",
             "displayName": "Release GCC 15.2.0 aarch64-apple-darwin25",
             "description": "Using compilers: C = /opt/homebrew/bin/aarch64-apple-darwin25-gcc-15, CXX = /opt/homebrew/bin/aarch64-apple-darwin25-g++-15",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/out/release/gcc-15",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/release/gcc-15",
                 "CMAKE_C_COMPILER": "/opt/homebrew/bin/aarch64-apple-darwin25-gcc-15",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/bin/aarch64-apple-darwin25-g++-15",
                 "CMAKE_BUILD_TYPE": "Release"
@@ -41,9 +41,9 @@
             "name": "rl Clang 21.1.2 arm64-apple-darwin25.1.0",
             "displayName": "Release Clang 21.1.2 arm64-apple-darwin25.1.0",
             "description": "Using compilers: C = /opt/homebrew/Cellar/llvm/21.1.2/bin/clang, CXX = /opt/homebrew/Cellar/llvm/21.1.2/bin/clang++",
-            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "binaryDir": "${sourceDir}/out/release/clang-21",
             "cacheVariables": {
-                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/release/clang-21",
                 "CMAKE_C_COMPILER": "/opt/homebrew/Cellar/llvm/21.1.2/bin/clang",
                 "CMAKE_CXX_COMPILER": "/opt/homebrew/Cellar/llvm/21.1.2/bin/clang++",
                 "CMAKE_BUILD_TYPE": "Release"
