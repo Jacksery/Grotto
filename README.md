@@ -31,34 +31,33 @@ A simple OpenGL 3D engine built with C++ and GLFW, implementing an Entity Compon
 ## Project Structure
 
 ```
-├── include/
-│   ├── components/          # ECS component definitions
-│   │   ├── cameraComponent.h
-│   │   ├── physicsComponent.h
-│   │   ├── renderComponent.h
-│   │   └── transformComponent.h
-│   ├── config/
-│   │   └── config.h         # Common includes and dependencies
-│   ├── logging/
-│   │   └── logging.h        # Logging utilities
-│   ├── systems/             # ECS system implementations
-│   │   ├── cameraSystem.h
-│   │   ├── motionSystem.h
-│   │   └── renderSystem.h
-│   └── view/
-│       └── shader.h         # Shader loading utilities
-├── src/
-│   ├── controller/
-│   │   ├── app.h            # Main application class
-│   │   └── app.cpp
-│   ├── shaders/
-│   │   ├── vertex.txt       # Vertex shader
-│   │   └── fragment.txt     # Fragment shader
-│   ├── systems/             # System implementations
-│   └── main.cpp             # Entry point
-├── res/
-│   └── textures/            # Texture assets
-└── build/                   # CMake build directory
+.
+├── CMakeLists.txt
+├── CMakePresets.json
+├── LICENSE.md
+├── README.md
+├── res                         # Resources that get copied to build directory (needed at runtime)
+│   ├── shaders
+│   │   ├── fragment.txt
+│   │   └── vertex.txt
+│   └── textures
+│       ├── brick.jpg
+│       └── mask.jpg
+└── src
+    ├── config.cpp              # Frequently used headers
+    ├── controller              # Main application implementation
+    │   ├── app.cpp
+    │   └── app.h
+    ├── glad.c                  # GLAD opengl bindings
+    ├── main.cpp                # Main entry point for execution
+    ├── resources               # Handles runtime assets
+    │   └── resourceManager.cpp 
+    ├── systems                 # Systems to handle ECS management
+    │   ├── cameraSystem.cpp
+    │   ├── motionSystem.cpp
+    │   └── renderSystem.cpp
+    └── view                    # Functions related to making shader program
+        └── shader.cpp
 ```
 
 ## Building the Project
@@ -89,14 +88,11 @@ A simple OpenGL 3D engine built with C++ and GLFW, implementing an Entity Compon
 
 - **WASD**: Move camera forward/back/left/right
 - **Mouse**: Look around (first-person view)
+- **Shift**: Toggle mouse lock
 - **ESC**: Exit application
 
 ## Issues
 If you encounter any issues, please open an issue on the GitHub repository.
-
-Known issues:
-- Ensure assets load correctly by running the executable from the `out/build/$CC` directory. Running it outside of the build directory may lead to asset loading issues — see [Issue #5](https://github.com/Jacksery/Grotto/issues/5) for additional details.
-
 
 ## License
 This project is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
