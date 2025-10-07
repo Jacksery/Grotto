@@ -43,11 +43,18 @@ bool CameraSystem::update(
   if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS) {
     dPos.y += 1.0f;
   }
+  if (glfwGetKey(window, GLFW_KEY_Q) == GLFW_PRESS) {
+    dPos.z -= 1.0f;
+  }
+  if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS) {
+    dPos.z += 1.0f;
+  }
   // Normalise movement to avoid faster diagonal movement
   if (glm::length(dPos) > 0.1f) {
     dPos = glm::normalize(dPos);
     pos += 0.05f * dPos.x * forwards;
     pos += 0.05f * dPos.y * right;
+    pos += 0.05f * dPos.z * globalUp;
   }
 
   if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS) {
@@ -87,7 +94,7 @@ bool CameraSystem::update(
     lastX = mouse_x;
     lastY = mouse_y;
 
-    const float sensitivity = 0.01f;
+    const float sensitivity = 0.05f;
     eulers.z += -static_cast<float>(dx) * sensitivity;
     eulers.y += -static_cast<float>(dy) * sensitivity;
     eulers.y = fminf(89.0f, fmaxf(-89.0f, eulers.y));
