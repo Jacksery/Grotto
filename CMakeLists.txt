@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(glfw3 3.4 REQUIRED)
 find_package(OpenGL REQUIRED)
 
-add_executable(Grotto src/main.cpp src/config.cpp src/glad.c src/systems/cameraSystem.cpp src/systems/motionSystem.cpp src/systems/renderSystem.cpp src/view/shader.cpp src/controller/app.cpp src/resources/ResourceManager.cpp)
+add_executable(Grotto src/main.cpp src/config.cpp src/glad.c src/systems/cameraSystem.cpp src/systems/motionSystem.cpp src/systems/renderSystem.cpp src/view/shader.cpp src/controller/app.cpp src/resources/resourceManager.cpp)
 
 target_include_directories(Grotto PRIVATE include)
 target_link_libraries(Grotto glfw OpenGL::GL)
