@@ -54,23 +54,47 @@ bool CameraSystem::update(
     return true;
   }
 
-  // Mouse
-  glm::vec3 dEulers = {0.0f, 0.0f, 0.0f};
-  double mouse_x, mouse_y;
-  glfwGetCursorPos(window, &mouse_x, &mouse_y);
-  glfwSetCursorPos(window, 320.0, 240.0);
-  glfwPollEvents();
+  // Mouse - use delta-based input without polling or recentering
+  static bool shiftPressed = false;
+  static bool cursorCaptured = true;
+  static double lastX = 0.0, lastY = 0.0;
+  static bool lastInit = false;
 
-  dEulers.z = -0.01f * static_cast<float>(mouse_x - 320.0);
-  dEulers.y = -0.01f * static_cast<float>(mouse_y - 240.0);
+  // Toggle capture with Shift (edge detect)
+  if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
+    if (!shiftPressed) {
+      cursorCaptured = !cursorCaptured;
+      glfwSetInputMode(window, GLFW_CURSOR,
+                       cursorCaptured ? GLFW_CURSOR_DISABLED
+                                      : GLFW_CURSOR_NORMAL);
+      if (cursorCaptured) {
+        glfwGetCursorPos(window, &lastX, &lastY);
+        lastInit = true;
+      } else {
+        lastInit = false;
+      }
+      shiftPressed = true;
+    }
+  } else {
+    shiftPressed = false;
+  }
 
-  eulers.y = fminf(89.0f, fmaxf(-89.0f, eulers.y + dEulers.y));
+  if (cursorCaptured && lastInit) {
+    double mouse_x, mouse_y;
+    glfwGetCursorPos(window, &mouse_x, &mouse_y);
+    double dx = mouse_x - lastX;
+    double dy = mouse_y - lastY;
+    lastX = mouse_x;
+    lastY = mouse_y;
 
-  eulers.z += dEulers.z;
-  if (eulers.z > 360) {
-    eulers.z -= 360;
-  } else if (eulers.z < 0) {
-    eulers.z += 360;
+    const float sensitivity = 0.01f;
+    eulers.z += -static_cast<float>(dx) * sensitivity;
+    eulers.y += -static_cast<float>(dy) * sensitivity;
+    eulers.y = fminf(89.0f, fmaxf(-89.0f, eulers.y));
+    if (eulers.z > 360.0f)
+      eulers.z -= 360.0f;
+    if (eulers.z < 0.0f)
+      eulers.z += 360.0f;
   }
 
   return false;

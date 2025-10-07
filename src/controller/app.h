@@ -26,6 +26,10 @@ public:
   void initOpenGL();
   void initSystems();
 
+  // Window / input helpers
+  void handleResize(int width, int height);
+  void setActive(bool active);
+
   // Components
   std::unordered_map<unsigned int, TransformComponent> transformComponents;
   std::unordered_map<unsigned int, PhysicsComponent> physicsComponents;
@@ -49,4 +53,6 @@ private:
   MotionSystem *motionSystem;
   CameraSystem *cameraSystem;
   RenderSystem *renderSystem;
+  // runtime state
+  bool isActive = true;
 };

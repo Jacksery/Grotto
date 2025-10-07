@@ -24,5 +24,4 @@ void RenderSystem::update(
     glBindVertexArray(entity.second.mesh);
     glDrawArrays(GL_TRIANGLES, 0, 36);
   }
-  glfwSwapBuffers(window);
 }
